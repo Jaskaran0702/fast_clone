@@ -1,14 +1,25 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import CountUp from "react-countup";
 import { IoReload } from "react-icons/io5";
 import { CiCircleQuestion } from "react-icons/ci";
 import { CiFacebook } from "react-icons/ci";
 import { CiTwitter } from "react-icons/ci";
-
+import axios from "axios";
 function App() {
   const [speed, setspeed] = useState(null);
   let startMethod = useRef(null);
+  useEffect(() => {
+    getInternetSpeed();
+  }, []);
+  const getInternetSpeed = async() => {
+    const response = await axios.get("http://localhost:5000/api/speed-test").then(resp => resp.data);
+    if(response.error){
+      return false;
+    }
+    setspeed(response.speed);
+    startMethod();
+  }
   return (
     <div className="text-center flex flex-col items-center justify-around px-50 py-0 box-border w-full h-full">
       <div className="h-1/4">
@@ -37,8 +48,9 @@ function App() {
                   </div>
                   <div className="text-8xl flex items-center justify-center flex-col">
                     <div className="mt-5 text-4xl font-bold">Mbps</div>
-                    <div className="cursor-pointer mt-10 flex items-center justify-center w-65 h-65 border-3 border-solid border-green-600 rounded-full">
+                    <div className="cursor-pointer mt-10 flex items-center justify-center w-65 h-65 border-5 border-solid border-green-600 rounded-full hover:bg-slate-400" onClick={() => getInternetSpeed(start)}>
                       <IoReload className="text-4xl" />
+
                     </div>
                   </div>
                 </>
@@ -47,14 +59,22 @@ function App() {
           </CountUp>
         </div>
       </div>
-      <div className="w-full h-full mt-5 flex flex-col items-center justify-between flex-1">
-        <button className="bg-none mb-4 mt-4 outline-none border border-solid border-gray-300 text-gray-500 text-lg px-8 py-2 rounded-10 focus:border-blue-500 focus:text-blue-500 transition duration-300 hover:border-blue-500 hover:text-blue-500">Show more Info</button>
+      <div className="w-full h-full mt-10 flex flex-col items-center justify-between flex-1">
+        <button className="bg-none mb-4 mt-10 outline-none border border-solid border-gray-300 text-gray-500 text-lg px-8 py-2 rounded-10 focus:border-blue-500 focus:text-blue-500 transition duration-300 hover:border-blue-500 hover:text-blue-500">
+          Show more Info
+        </button>
         <div className="flex items-center justify-center">
-          <div className="w-45 h-45 rounded-full bg-gray-700 flex items-center justify-center m-10 "><CiCircleQuestion className="text-5xl bg-white  hover:cursor-pointer hover:bg-blue-500"/></div>
-          <div className="w-45 h-45 rounded-full bg-gray-700 flex items-center justify-center m-10"><CiFacebook className="text-5xl bg-white  hover:cursor-pointer hover:bg-blue-500"/></div>
-          <div className="w-45 h-45 rounded-full bg-gray-700 flex items-center justify-center m-10"><CiTwitter className="text-5xl bg-white  hover:cursor-pointer hover:bg-blue-500"/></div>
+          <div className="w-45 h-45 rounded-full bg-gray-700 flex items-center justify-center m-10 ">
+            <CiCircleQuestion className="text-5xl bg-white  hover:cursor-pointer hover:bg-blue-300 hover:rounded-full" />
+          </div>
+          <div className="w-45 h-45 rounded-full bg-gray-700 flex items-center justify-center m-10">
+            <CiFacebook className="text-5xl bg-white  hover:cursor-pointer hover:bg-blue-300 hover:rounded-full" />
+          </div>
+          <div className="w-45 h-45 rounded-full bg-gray-700 flex items-center justify-center m-10">
+            <CiTwitter className="text-5xl bg-white  hover:cursor-pointer hover:bg-blue-300 hover:rounded-full" />
+          </div>
         </div>
-        <div className="w-full flex items-center justify-items-end pr-10 box-border">
+        <div className="flex items-center justify-items-start pr-5 box-border bottom-0 space-y-1">
           <img
             src="https://fast.com/assets/poweredby-865a3b.svg"
             alt="powered"
